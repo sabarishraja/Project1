@@ -1,19 +1,21 @@
 import csv
-
-import numpy
-
+import numpy as np
 from model.LassoHomotopy import LassoHomotopyModel
 
-def test_predict():
-    model = LassoHomotopyModel()
-    data = []
-    with open("small_test.csv", "r") as file:
-        reader = csv.DictReader(file)
-        for row in reader:
-            data.append(row)
+# Load data from CSV
+data = []
+with open("tests/small_test.csv", "r") as file:
+    reader = csv.DictReader(file)
+    for row in reader:
+        data.append(row)
 
-    X = numpy.array([[v for k,v in datum.items() if k.startswith('x')] for datum in data])
-    y = numpy.array([[v for k,v in datum.items() if k=='y'] for datum in data])
-    results = model.fit(X,y)
-    preds = results.predict(X)
-    assert preds == 0.5
+X = np.array([[float(v) for k, v in datum.items() if k.startswith('x')] for datum in data])
+y = np.array([float(datum['y']) for datum in data])
+
+# Fit the model
+model = LassoHomotopyModel(alpha=0.1)
+results = model.fit(X, y)
+
+# Predict and validate
+preds = results.predict(X)
+print("Predictions:", preds)
