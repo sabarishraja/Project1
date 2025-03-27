@@ -9,7 +9,7 @@ Regularization helps in preventing overfitting by adding penalty term to loss fu
 
 Here, λ is a regularization parameter that controls the strength of penalty.
 ## LASSO Regression
-
+![image_alt](https://github.com/sabarishraja/Project1/blob/main/Lasso%20Equation.png?raw=true)
 LASSO is helpful for feature selection. LASSO is handling high-dimensional data. It adds a penalty term to Residual sum of squares, then it is multiplied to lambda. The penalty helps in avoiding multi-collinearity and overfitting issues.
 In both cases, λ (lambda) is the regularization parameter that controls the strength of the penalty:
 1. A small λ results in minimal penalty, allowing the model to fit the training data closely (risking overfitting).
