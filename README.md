@@ -52,7 +52,7 @@ Then the main test script using :
 ```
 python test_LassoHomotopy.py
 ```
-## Visualization output:
+## Test Output Visualization:
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Output%20Images/Coefficient%20Comparison%20with%20test%20case%201.jpeg?raw=true)
 
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Output%20Images/Coefficient%20Comparison%20with%20test%20case%202.jpeg?raw=true)
@@ -62,7 +62,9 @@ python test_LassoHomotopy.py
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Output%20Images/Prediction%20Comparison.jpeg?raw=true)
 
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Output%20Images/Small%20and%20collinear%20data%20test%20case.jpeg?raw=true)
-# 1. What does the model you have implemented do and when should it be used?
+# Questions:
+
+## 1. What does the model you have implemented do and when should it be used?
 This model performs LASSO regression using the Homotopy Method to minimize the residual sum of squares while adding a penalty on the absolute size of coefficients. This approach results in sparse solutions, setting some coefficients to zero, which helps with feature selection. It’s best suited for datasets with many features, especially when there’s multicollinearity or noise, and when interpretability is important. This model is a great choice in the following situations:
 * Picking Out Key Features :
 When you’re dealing with datasets that have too many features (more features than data points), this model helps identify the most important ones, simplifying your analysis.
@@ -72,7 +74,7 @@ If your data has features that are highly related to each other, this model can 
 When you want a clear and interpretable model where only the most relevant features have non-zero coefficients, making it easy to understand which variables matter.
 * Working with Smaller Datasets :
 It’s well-suited for small to medium-sized datasets where computational speed isn’t a big concern. For very large datasets, more optimized tools like scikit-learn might be better.
-# 2. How did you test your model to determine if it is working reasonably correctly?
+## 2. How did you test your model to determine if it is working reasonably correctly?
 To ensure the custom LassoHomotopyModel works as intended, the following steps were carried out in the code:
 * The model’s predictions, coefficients, and performance metrics (MSE and R²) were compared with those from Scikit-Learn’s Lasso using datasets like small_test.csv and collinear_data.csv.
 * Scatter plots of actual vs predicted values were created to visually confirm that both models produced similar results.
@@ -81,7 +83,7 @@ To ensure the custom LassoHomotopyModel works as intended, the following steps w
 * Different regularization strengths (alpha values of 0.01, 0.1, and 1.0) were evaluated to analyze their impact on the model’s behavior.
 * Edge cases such as small datasets (n_samples=20) and non-negative features (X_non_negative = np.abs(X)) were validated to ensure robustness.
 These steps confirmed that the custom model performs reliably and aligns with the behavior of Scikit-Learn’s implementation.
-# 3. What parameters have you exposed to users of your implementation in order to tune performance?
+## 3. What parameters have you exposed to users of your implementation in order to tune performance?
 The key parameters exposed in the implementation for tuning performance are:
 * alpha: 
 This is the regularization parameter. It controls the strength of the L1 penalty applied to the model coefficients. A higher alpha enforces more regularization, often leading to sparser (i.e., more zeroed-out) coefficients, which can help reduce overfitting but may also underfit if set too high.
@@ -93,6 +95,6 @@ This parameter sets the convergence threshold. The algorithm will stop iterating
 This parameter defines the maximum number of iterations the algorithm will run. It serves as a safeguard to ensure the algorithm terminates even if the convergence criteria are not met, helping control computational time and resources.
 
 These parameters allow users to balance between model accuracy and computational efficiency, adjusting the regularization strength, convergence precision, and iteration limits as needed for different datasets and performance requirements.
-# 4. Are there specific inputs that your implementation has trouble with? Given more time, could you work around these or is it fundamental?
+## 4. Are there specific inputs that your implementation has trouble with? Given more time, could you work around these or is it fundamental?
 When we check the graph we find that the custom lasso homotopy model clearly underperforms on "small_test.csv". the coefficient values diverge significantly as witnessed in the actual vs predicated plot using matplotlib. Also the result for collinearity is also slightly ambiguous as we only tested on only one csv file, "collinear_data.csv" even though it almost fits similar to scikit's model even though its a minor issue. Also for lasso penalty we have used L1 regularization and L2 penalty that is ridge regression partially, for stability but we could have used Elastic Net that combines both L1 and L2 regularization. Here we can also learn that the custom homotopy model dosent perform well in high noise of 1.0 as compared to sklearn model under same noise conditions which is also another setback
 If provided more time we would first go for implementing elastic net in place of L1 and L2 regularization separately which would improve the performance giving more reliable performance of the model.  Then we go for testing the model for more colinear data to test the ambiguity of the model. We might solve the problem that we faced in small csv if switched to elastic net instead L1 regularization.
