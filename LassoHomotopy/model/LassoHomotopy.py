@@ -1,103 +1,127 @@
 import numpy as np
 
+
 class LassoHomotopyModel:
-    def __init__(self, alpha=1.0, tol=1e-4, max_iter=1000):
-        """
-        Initialize the LassoHomotopyModel.
-        
-        Parameters:
-        - alpha: Regularization strength (λ).
-        - tol: Convergence tolerance.
-        - max_iter: Maximum number of iterations for the algorithm.
-        """
-        self.alpha = alpha  # Regularization parameter
-        self.tol = tol      # Tolerance for convergence
-        self.max_iter = max_iter  # Maximum iterations
-        self.coef_ = None   # Coefficients after fitting
-        self.intercept_ = None  # Intercept term (if applicable)
+    def __init__(self, alpha=0.1, tol=1e-6, max_iter=1000):
+        self.alpha = alpha
+        self.tol = tol
+        self.max_iter = max_iter
+        self.beta = None
+        self.active_set = []
+        self.signs = []
+        self.mu = None
+        self.X_mean = None
+        self.X_std = None
+        self.y_mean = None
+
+    def _standardize(self, X, y):
+        self.X_mean = X.mean(axis=0)
+        self.X_std = X.std(axis=0)
+        self.y_mean = y.mean()
+
+        # Handle zero-variance features
+        self.X_std[self.X_std == 0] = 1.0
+
+        X_std = (X - self.X_mean) / self.X_std
+        y_centered = y - self.y_mean
+        return X_std, y_centered
 
     def fit(self, X, y):
-        """
-        Fit the LASSO model using the Homotopy Method.
-        
-        Parameters:
-        - X: Feature matrix (n_samples, n_features).
-        - y: Target vector (n_samples,).
-        
-        Returns:
-        - An instance of LassoHomotopyResults containing the fitted coefficients.
-        """
+        X, y = self._standardize(X, y)
         n_samples, n_features = X.shape
-        X = np.hstack([np.ones((n_samples, 1)), X])  # Add intercept term
-        y = y.flatten()  # Ensure y is a 1D array
+        if n_features == 0:
+            raise ValueError("Input matrix X has no features after standardization")
+        self.beta = np.zeros(n_features)
+        self.mu = np.zeros_like(y)
+        self.active_set = []
+        self.signs = []
 
-        # Initialize variables
-        beta = np.zeros(n_features + 1)  # Coefficients (including intercept)
-        active_set = []  # Indices of active features
-        inactive_set = list(range(1, n_features + 1))  # Exclude intercept
+        corr = X.T @ y
+        lambda_max = np.max(np.abs(corr))
+        lambda_ = lambda_max
 
-        residual = y  # Initial residual
-        for iteration in range(self.max_iter):
-            # Compute correlation between features and residual
-            correlations = X[:, inactive_set].T @ residual
-            if len(active_set) > 0:
-                correlations_active = X[:, active_set].T @ residual
-                correlations = np.concatenate([correlations_active, correlations])
-
-            # Find the feature with the largest correlation
-            max_corr_idx = np.argmax(np.abs(correlations))
-            if max_corr_idx < len(active_set):
-                # Update existing active feature
-                update_idx = active_set[max_corr_idx]
-            else:
-                # Add new feature to active set
-                update_idx = inactive_set[max_corr_idx - len(active_set)]
-                active_set.append(update_idx)
-                inactive_set.remove(update_idx)
-
-            # Solve least squares on active set
-            X_active = X[:, active_set]
-            beta_active = np.linalg.lstsq(X_active, y, rcond=None)[0]
-
-            # Apply soft thresholding for LASSO
-            beta_active = np.sign(beta_active) * np.maximum(np.abs(beta_active) - self.alpha, 0)
-
-            # Update coefficients
-            beta[active_set] = beta_active
-            residual = y - X @ beta
-
-            # Check for convergence
-            if np.linalg.norm(residual) < self.tol:
+        for _ in range(self.max_iter):
+            if lambda_ < self.alpha * lambda_max:
                 break
 
-        # Store the final coefficients
-        self.coef_ = beta[1:]  # Exclude intercept
-        self.intercept_ = beta[0]
+            residuals = y - self.mu
+            correlations = X.T @ residuals
+            inactive = list(set(range(n_features)) - set(self.active_set))
 
-        # Return results object
-        return LassoHomotopyResults(self.coef_, self.intercept_)
+            if not inactive or np.max(np.abs(correlations[inactive])) < self.tol:
+                break
+
+            j = inactive[np.argmax(np.abs(correlations[inactive]))]
+            sign = np.sign(correlations[j])
+
+            if j not in self.active_set:
+                self.active_set.append(j)
+                self.signs.append(sign)
+
+            X_active = X[:, self.active_set]
+            signs = np.array(self.signs)
+            gram = X_active.T @ X_active
+
+            try:
+                inv_gram = np.linalg.inv(gram + 1e-8 * np.eye(len(self.active_set)))
+            except np.linalg.LinAlgError:
+                inv_gram = np.linalg.pinv(gram)
+
+            equi_vec = inv_gram @ signs
+            direction = X_active @ equi_vec
+
+            gamma = np.inf
+            c = X.T @ residuals
+            d = X.T @ direction
+            for k in range(n_features):
+                if k in self.active_set:
+                    continue
+                denominator_plus = 1 - d[k] + 1e-12
+                denominator_minus = 1 + d[k] + 1e-12
+
+                temp_plus = (lambda_ - c[k]) / denominator_plus
+                if temp_plus > 1e-12 and temp_plus < gamma:
+                    gamma = temp_plus
+
+                temp_minus = (lambda_ + c[k]) / denominator_minus
+                if temp_minus > 1e-12 and temp_minus < gamma:
+                    gamma = temp_minus
+
+            for idx, k in enumerate(self.active_set):
+                denominator = equi_vec[idx] + 1e-12
+                if np.abs(denominator) < 1e-12:
+                    continue
+
+                gamma_k = -self.beta[k] / denominator
+                if gamma_k > 1e-12 and gamma_k < gamma:
+                    gamma = gamma_k
+                    drop_idx = idx
+
+            if gamma < 1e-10 or not np.isfinite(gamma):
+                break
+
+            self.mu += gamma * direction
+            self.beta[self.active_set] += gamma * equi_vec
+            lambda_ -= gamma
+
+            if 'drop_idx' in locals():
+                del self.active_set[drop_idx]
+                del self.signs[drop_idx]
+
+        self.beta = np.nan_to_num(self.beta)
+        return LassoHomotopyResults(self.beta, self.X_mean, self.X_std, self.y_mean)
 
 
 class LassoHomotopyResults:
-    def __init__(self, coef, intercept):
-        """
-        Initialize the results of the LASSO fit.
-        
-        Parameters:
-        - coef: Fitted coefficients.
-        - intercept: Intercept term.
-        """
-        self.coef_ = coef
-        self.intercept_ = intercept
+    def __init__(self, beta, X_mean, X_std, y_mean):
+        self.beta = beta
+        self.X_mean = X_mean
+        self.X_std = X_std
+        self.y_mean = y_mean
 
     def predict(self, X):
-        """
-        Predict using the fitted LASSO model.
-        
-        Parameters:
-        - X: Feature matrix (n_samples, n_features).
-        
-        Returns:
-        - Predicted values (n_samples,).
-        """
-        return X @ self.coef_ + self.intercept_
+        if not np.isfinite(self.beta).all():
+            raise ValueError("Model contains invalid coefficients - failed to converge")
+
+        X_scaled = (X - self.X_mean) / self.X_std
+        return X_scaled @ self.beta + self.y_mean
