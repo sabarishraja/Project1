@@ -1,8 +1,8 @@
 # Contributors:
-1. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118)
-2. Madhusoodhan Tirunangur Girinarayanan (A20580122)
-3. Sabarish Raja Ramesh Raja (A20576363)
-4. Mukund Sanjay Bharani (A20577945)
+1. Madhusoodhan Tirunangur Girinarayanan (A20580122)
+2. Mukund Sanjay Bharani (A20577945)
+3. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118)
+4. Sabarish Raja Ramesh Raja (A20576363)
 # <b>Introduction</b>
 This project implements LASSO (Least Absolute Shrinkage and Selection Operator) regression using the Homotopy Method . The implementation is done entirely from scratch, relying only on NumPy and SciPy for computations. No external libraries like scikit-learn were used.
 The goal of this project is to solve the LASSO optimization problem using the Homotopy algorithm. This method is efficient and produces sparse solutions, making it ideal for feature selection in datasets with many features.
@@ -90,5 +90,5 @@ This parameter defines the maximum number of iterations the algorithm will run. 
 
 These parameters allow users to balance between model accuracy and computational efficiency, adjusting the regularization strength, convergence precision, and iteration limits as needed for different datasets and performance requirements.
 # 4. Are there specific inputs that your implementation has trouble with? Given more time, could you work around these or is it fundamental?
-When we check the graph we find that the custom lasso homotopy model clearly underperforms on "small_test.csv". the coefficient values diverge significantly as witnessed in the actual vs predicated plot using matplotlib. Also the result for collinearity is also slightly ambiguous as we only tested on only one csv file, "collinear_data.csv" even though it almost fits similar to scikit's model even though its a minor issue. Also for lasso penalty we have used L1 regularization and L2 penalty that is ridge regression partially, for stability but we could have used Elastic Net that combines both L1 and L2 regularization.
-If provided more time we would first go for implementing elastic net in place of L1 and L2 regularization separately which would improve the performance giving more reliable performance of the model.  Then we go for testing the model for more colinear data to test the ambiguity of the model. We might solve the problem that we faced in small csv if switched to elastic net instead L1 regularization.
+When we check the graph we find that the custom lasso homotopy model clearly underperforms on "small_test.csv". the coefficient values diverge significantly as witnessed in the actual vs predicated plot using matplotlib. Also the result for collinearity is also slightly ambiguous as we only tested on only one csv file, "collinear_data.csv" even though it almost fits similar to scikit's model even though its a minor issue. Also for lasso penalty we have used L1 regularization and L2 penalty that is ridge regression partially, for stability but we could have used Elastic Net that combines both L1 and L2 regularization. Here we can also learn that the custom homotopy model dosent perform well in high noise of 1.0 as compared to sklearn model under same noise conditions which is also another setback
+If provided more time we would first go for implementing elastic net in place of L1 and L2 regularization separately which would improve the performance giving more reliable performance of the model.  Then we go for testing the model for more colinear data to test the ambiguity of the model. We might solve the problem that we faced in small csv if switched to elastic net instead L1 regularization.
