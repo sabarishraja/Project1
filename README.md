@@ -1,3 +1,8 @@
+# Contributors:
+1. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118)
+2. Madhusoodhan Tirunangur Girinarayanan (A20580122)
+3. Sabarish Raja Ramesh Raja (A20576363)
+4. Mukund Sanjay Bharani (A20577945)
 # <b>Introduction</b>
 This project implements LASSO (Least Absolute Shrinkage and Selection Operator) regression using the Homotopy Method . The implementation is done entirely from scratch, relying only on NumPy and SciPy for computations. No external libraries like scikit-learn were used.
 The goal of this project is to solve the LASSO optimization problem using the Homotopy algorithm. This method is efficient and produces sparse solutions, making it ideal for feature selection in datasets with many features.
