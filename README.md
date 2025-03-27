@@ -1,7 +1,7 @@
 # Contributors:
 1. Madhusoodhan Tirunangur Girinarayanan (A20580122) - mtirunangurgirinaray@hawk.iit.edu
 2. Mukund Sanjay Bharani (A20577945) - mbharani@hawk.iit.edu
-3. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118)
+3. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118) - mkalyaninarayanamoor@hawk.iit.edu
 4. Sabarish Raja Ramesh Raja (A20576363) - srameshraja@hawk.iit.edu
 # <b>Introduction</b>
 This project implements LASSO (Least Absolute Shrinkage and Selection Operator) regression using the Homotopy Method . The implementation is done entirely from scratch, relying only on NumPy and SciPy for computations. No external libraries like scikit-learn were used.
