@@ -48,7 +48,10 @@ pytest test_LassoHomotopy.py
 ```
 ## Visualization output:
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Visualization%20results.jpeg?raw=true)
-
+** Prediction Comparison
+![image_alt](https://github.com/sabarishraja/Project1/blob/main/Prediction%20comparison.jpeg?raw=true)
+** Coefficient Comparison
+![image_alt](https://github.com/sabarishraja/Project1/blob/main/Coefficient%20comparison.jpeg?raw=true)
 # 1. What does the model you have implemented do and when should it be used?
 This model performs LASSO regression using the Homotopy Method to minimize the residual sum of squares while adding a penalty on the absolute size of coefficients. This approach results in sparse solutions, setting some coefficients to zero, which helps with feature selection. It’s best suited for datasets with many features, especially when there’s multicollinearity or noise, and when interpretability is important. This model is a great choice in the following situations:
 * Picking Out Key Features :
