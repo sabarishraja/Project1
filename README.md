@@ -69,6 +69,14 @@ When you want a clear and interpretable model where only the most relevant featu
 * Working with Smaller Datasets :
 It’s well-suited for small to medium-sized datasets where computational speed isn’t a big concern. For very large datasets, more optimized tools like scikit-learn might be better.
 # 2. How did you test your model to determine if it is working reasonably correctly?
+To ensure the custom LassoHomotopyModel works as intended, the following steps were carried out in the code:
+* The model’s predictions, coefficients, and performance metrics (MSE and R²) were compared with those from Scikit-Learn’s Lasso using datasets like small_test.csv and collinear_data.csv.
+* Scatter plots of actual vs predicted values were created to visually confirm that both models produced similar results.
+* Bar charts were used to compare the learned coefficients (custom_results_small.beta vs sklearn_model_small.coef_) to verify consistent feature selection.
+* The model was tested on a variety of scenarios generated using the generate_data function, including collinear features, high-dimensional data, sparse data, noisy data, and datasets of different sizes.
+* Different regularization strengths (alpha values of 0.01, 0.1, and 1.0) were evaluated to analyze their impact on the model’s behavior.
+* Edge cases such as small datasets (n_samples=20) and non-negative features (X_non_negative = np.abs(X)) were validated to ensure robustness.
+These steps confirmed that the custom model performs reliably and aligns with the behavior of Scikit-Learn’s implementation.
 # 3. What parameters have you exposed to users of your implementation in order to tune performance?
 The key parameters exposed in the implementation for tuning performance are:
 * alpha: 
