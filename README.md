@@ -8,6 +8,8 @@ Regularization helps in preventing overfitting by adding penalty term to loss fu
 2. LASSO (Least Absolute Shrinkage and Selection Operator): It adds a penalty proportional to absolute value of coefficient.
 
 Here, λ is a regularization parameter that controls the strength of penalty.
+## LASSO Regression
+
 LASSO is helpful for feature selection. LASSO is handling high-dimensional data. It adds a penalty term to Residual sum of squares, then it is multiplied to lambda. The penalty helps in avoiding multi-collinearity and overfitting issues.
 In both cases, λ (lambda) is the regularization parameter that controls the strength of the penalty:
 1. A small λ results in minimal penalty, allowing the model to fit the training data closely (risking overfitting).
@@ -47,18 +49,25 @@ pytest test_LassoHomotopy.py
 
 
 # 1. What does the model you have implemented do and when should it be used?
-This model performs LASSO regression using the Homotopy Method to minimize the residual sum of squares while adding a penalty on the absolute size of coefficients. This approach results in sparse solutions, setting some coefficients to zero, which helps with feature selection. It’s best suited for datasets with many features, especially when there’s multicollinearity or noise, and when interpretability is important. It works well in fields like genomics, finance, or text analysis, where identifying key predictors and avoiding overfitting are critical. Use it when you need a simpler, more interpretable model.
-
+This model performs LASSO regression using the Homotopy Method to minimize the residual sum of squares while adding a penalty on the absolute size of coefficients. This approach results in sparse solutions, setting some coefficients to zero, which helps with feature selection. It’s best suited for datasets with many features, especially when there’s multicollinearity or noise, and when interpretability is important. This model is a great choice in the following situations:
+* Picking Out Key Features :
+When you’re dealing with datasets that have too many features (more features than data points), this model helps identify the most important ones, simplifying your analysis.
+* Dealing with Correlated Variables :
+If your data has features that are highly related to each other, this model can handle it by reducing redundancy and avoiding overfitting (e.g., as shown in collinear_data.csv).
+* Making Sense of Results :
+When you want a clear and interpretable model where only the most relevant features have non-zero coefficients, making it easy to understand which variables matter.
+* Working with Smaller Datasets :
+It’s well-suited for small to medium-sized datasets where computational speed isn’t a big concern. For very large datasets, more optimized tools like scikit-learn might be better.
 # 2. How did you test your model to determine if it is working reasonably correctly?
 # 3. What parameters have you exposed to users of your implementation in order to tune performance?
 The key parameters exposed in the implementation for tuning performance are:
-alpha: 
+* alpha: 
 This is the regularization parameter. It controls the strength of the L1 penalty applied to the model coefficients. A higher alpha enforces more regularization, often leading to sparser (i.e., more zeroed-out) coefficients, which can help reduce overfitting but may also underfit if set too high.
 
-tol (tolerance):
+* tol (tolerance):
 This parameter sets the convergence threshold. The algorithm will stop iterating once the change in the model (or related objective function) is less than this value. Lowering the tolerance can lead to a more precise solution at the cost of additional iterations and computation time.
 
-max_iter (maximum iterations):
+* max_iter (maximum iterations):
 This parameter defines the maximum number of iterations the algorithm will run. It serves as a safeguard to ensure the algorithm terminates even if the convergence criteria are not met, helping control computational time and resources.
 
 These parameters allow users to balance between model accuracy and computational efficiency, adjusting the regularization strength, convergence precision, and iteration limits as needed for different datasets and performance requirements.
