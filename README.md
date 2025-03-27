@@ -1,8 +1,8 @@
 # Contributors:
-1. Madhusoodhan Tirunangur Girinarayanan (A20580122)
-2. Mukund Sanjay Bharani (A20577945)
+1. Madhusoodhan Tirunangur Girinarayanan (A20580122) - mtirunangurgirinaray@hawk.iit.edu
+2. Mukund Sanjay Bharani (A20577945) - mbharani@hawk.iit.edu
 3. Muthu Nageswaran Kalyani Narayanamoorthy (A20588118)
-4. Sabarish Raja Ramesh Raja (A20576363)
+4. Sabarish Raja Ramesh Raja (A20576363) - srameshraja@hawk.iit.edu
 # <b>Introduction</b>
 This project implements LASSO (Least Absolute Shrinkage and Selection Operator) regression using the Homotopy Method . The implementation is done entirely from scratch, relying only on NumPy and SciPy for computations. No external libraries like scikit-learn were used.
 The goal of this project is to solve the LASSO optimization problem using the Homotopy algorithm. This method is efficient and produces sparse solutions, making it ideal for feature selection in datasets with many features.
@@ -47,10 +47,10 @@ pip install -r requirements.txt
 ```
 ### 3. Run the Tests
 Navigate to the LassoHomotopy/tests/ directory and execute the test suite using pytest.
-First, navigate to the tests folder:
-Run the tests using pytest. For example, to run the main test script:
+First, navigate to the tests folder.
+Then the main test script using :
 ```
-pytest test_LassoHomotopy.py
+python test_LassoHomotopy.py
 ```
 ## Visualization output:
 ![image_alt](https://github.com/sabarishraja/Project1/blob/main/Output%20Images/Coefficient%20Comparison%20with%20test%20case%201.jpeg?raw=true)
