@@ -46,7 +46,8 @@ Run the tests using pytest. For example, to run the main test script:
 ```
 pytest test_LassoHomotopy.py
 ```
-
+## Visualization output:
+![image_alt](https://github.com/sabarishraja/Project1/blob/main/Visualization%20results.jpeg?raw=true)
 
 # 1. What does the model you have implemented do and when should it be used?
 This model performs LASSO regression using the Homotopy Method to minimize the residual sum of squares while adding a penalty on the absolute size of coefficients. This approach results in sparse solutions, setting some coefficients to zero, which helps with feature selection. It’s best suited for datasets with many features, especially when there’s multicollinearity or noise, and when interpretability is important. This model is a great choice in the following situations:
@@ -72,3 +73,5 @@ This parameter defines the maximum number of iterations the algorithm will run. 
 
 These parameters allow users to balance between model accuracy and computational efficiency, adjusting the regularization strength, convergence precision, and iteration limits as needed for different datasets and performance requirements.
 # 4. Are there specific inputs that your implementation has trouble with? Given more time, could you work around these or is it fundamental?
+When we check the graph we find that the custom lasso homotopy model clearly underperforms on "small_test.csv". the coefficient values diverge significantly as witnessed in the actual vs predicated plot using matplotlib. Also the result for collinearity is also slightly ambiguous as we only tested on only one csv file, "collinear_data.csv" even though it almost fits similar to scikit's model even though its a minor issue. Also for lasso penalty we have used L1 regularization and L2 penalty that is ridge regression partially, for stability but we could have used Elastic Net that combines both L1 and L2 regularization.
+If provided more time we would first go for implementing elastic net in place of L1 and L2 regularization separately which would improve the performance giving more reliable performance of the model.  Then we go for testing the model for more colinear data to test the ambiguity of the model. We might solve the problem that we faced in small csv if switched to elastic net instead L1 regularization.
